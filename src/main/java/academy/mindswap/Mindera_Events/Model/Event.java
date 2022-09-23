@@ -1,4 +1,4 @@
-package academy.mindswap.Mindera_Events.Models;
+package academy.mindswap.Mindera_Events.Model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
