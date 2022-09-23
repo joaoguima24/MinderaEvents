@@ -22,4 +22,5 @@ public class UserController {
         return eventService.createEvent(event);
     }
 
+
 }
