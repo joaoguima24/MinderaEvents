@@ -4,6 +4,8 @@ import academy.mindswap.Mindera_Events.Model.Event;
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class EventService {
     private final EventRepository eventRepository;
@@ -12,7 +14,6 @@ public class EventService {
     }
 
     public Event createEvent(Event event) {
-        //Event e = new Event();
         return eventRepository.insert(event);
     }
 }
