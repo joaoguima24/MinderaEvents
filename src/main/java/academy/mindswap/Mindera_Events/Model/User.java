@@ -16,6 +16,7 @@ public class User {
     private String events;
     private String password;
     private String officeRole;
+    private String appRole;
     private String dateOfBirth;
 
     public User(){
