@@ -28,12 +28,12 @@ public class UserController {
     public Event createEvent(@RequestBody Event event){
         return eventService.createEvent(event);
     }
-    @GetMapping
+    @GetMapping("/getuserlist")
     public ResponseEntity<List<User>> getUserList() {
         List<User> userList = userService.getUserList();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
-    @GetMapping
+    @GetMapping("/geteventlist")
     public ResponseEntity<List<Event>> getEventList() {
         List<Event> eventList = eventService.getEventList();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
