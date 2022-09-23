@@ -15,17 +15,14 @@ public class Event {
 
     private String type;
 
-    private String state;
+    private String state= "unapproved";
 
     private Date date;
 
     private String startingTime;
 
-    public Event(String title, String type, Date date, String startingTime) {
-        this.title = title;
-        this.type = type;
-        this.state = "UNAPPROVED";
-        this.date = date;
-        this.startingTime = startingTime;
+
+    public Event() {
+
     }
 }
