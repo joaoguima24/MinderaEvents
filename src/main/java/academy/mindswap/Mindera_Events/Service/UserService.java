@@ -20,4 +20,8 @@ public class UserService {
         return userList;
     }
 
+    public User createUser(User user) {
+
+       return userRepository.insert(user);
+    }
 }

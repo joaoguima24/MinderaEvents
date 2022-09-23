@@ -26,6 +26,10 @@ public class UserController {
     public Event createEvent(@RequestBody Event event){
         return eventService.createEvent(event);
     }
+
+
+    @PostMapping("/createUser")
+    public User createUser(@RequestBody User user){return userService.createUser(user);}
     @GetMapping("/getuserlist")
     public ResponseEntity<List<User>> getUserList() {
         List<User> userList = userService.getUserList();
