@@ -18,7 +18,7 @@ public class Event {
 
     private String state;
 
-    private Date date;
+    private String date;
 
     private String startingTime;
 
