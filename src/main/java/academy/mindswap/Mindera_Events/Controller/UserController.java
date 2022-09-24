@@ -32,6 +32,11 @@ public class UserController {
     public Event updateEventState(@RequestBody Event event) throws ChangeSetPersister.NotFoundException {
         return eventService.updateEventState(event);
     }
+
+    @PutMapping("/user/addtoevent")
+    public Event addUserToEvent(@RequestBody Event eventId ) throws ChangeSetPersister.NotFoundException {
+        return eventService.addUserToEvent(eventId);
+    }
     @GetMapping("/user/getuserlist")
     public ResponseEntity<List<User>> getUserList() {
         List<User> userList = userService.getUserList();
