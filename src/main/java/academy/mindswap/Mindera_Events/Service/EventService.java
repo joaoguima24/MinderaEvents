@@ -21,4 +21,19 @@ public class EventService {
         List<Event> eventList = eventRepository.findAll();
         return eventList;
     }
+    public Event getByTitle(String title) {
+
+        return  eventRepository.findByTitle(title);
+    }
+    public Event getByState(String state) {
+        return  eventRepository.findByState(state);
+    }
+
+    public Event getByDate(String date) {
+        return  eventRepository.findByDate(date);
+    }
+
+    public Event getByType(String type) {
+        return  eventRepository.findByType(type);
+    }
 }
