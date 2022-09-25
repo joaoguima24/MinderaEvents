@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +32,4 @@ public class EventService {
         return eventRepository.save(updatedEventState.get());
     }
 
-    public Event addUserToEvent(Event eventId) throws ChangeSetPersister.NotFoundException {
-        Optional<Event> eventOptional = eventRepository.findById(eventId.getId());
-        if(eventOptional.isEmpty()){throw new ChangeSetPersister.NotFoundException();}
-        User newUser = new User();
-        eventOptional.get().getWaitingList().add(userService.createUser(newUser));
-        return eventRepository.save(eventOptional.get());
-    }
 }

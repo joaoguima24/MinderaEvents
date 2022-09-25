@@ -21,11 +21,7 @@ public class Event {
     private List<User> attendance;
     private List<User> waitingList;
 
-    public Event(String title, String type, Date date, String startingTime) {
-        this.title = title;
-        this.type = type;
-        this.state = "UNAPPROVED";
-        this.date = date;
-        this.startingTime = startingTime;
+    public Event() {
+
     }
 }
