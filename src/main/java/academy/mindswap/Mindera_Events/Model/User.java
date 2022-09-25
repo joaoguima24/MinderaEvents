@@ -18,7 +18,7 @@ public class User {
     private String officeRole;
     private String appRole;
     private String dateOfBirth;
-
+    private String department;
     public User(){
 
     }

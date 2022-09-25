@@ -45,6 +45,11 @@ public class UserController {
         User user = userService.getByRole(officeRole);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+    @GetMapping("/getbydepartment/{department}")
+    public ResponseEntity<User> getByDepartment(@PathVariable String department) {
+        User user = userService.getByDepartment(department);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
@@ -59,7 +64,7 @@ public class UserController {
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
     @GetMapping("/getbydate/{date}")
-    public ResponseEntity<Event> getByDate(@PathVariable String date) {
+    public ResponseEntity<Event> getByDate(@PathVariable String date){
         Event event = eventService.getByDate(date);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }

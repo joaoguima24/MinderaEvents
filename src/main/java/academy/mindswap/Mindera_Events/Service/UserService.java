@@ -32,4 +32,8 @@ public class UserService {
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
     }
+    public User getByDepartment(String department) {
+
+        return  userRepository.findByDepartment(department);
+    }
 }
