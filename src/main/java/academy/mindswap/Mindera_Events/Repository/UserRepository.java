@@ -4,9 +4,11 @@ import academy.mindswap.Mindera_Events.Model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
-    User findByOfficeRole(String officeRole);
+    List<User> findByOfficeRole(String officeRole);
 
-    User findByDepartment(String department);
+    List<User> findByDepartment(String department);
 }

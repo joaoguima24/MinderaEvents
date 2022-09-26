@@ -41,14 +41,14 @@ public class UserController {
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
     @GetMapping("/getbyrole/{officeRole}")
-    public ResponseEntity<User> getByRole(@PathVariable String officeRole) {
-        User user = userService.getByRole(officeRole);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<List<User>> getByRole(@PathVariable String officeRole) {
+        List<User> userList = userService.getByRole(officeRole);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/getbydepartment/{department}")
-    public ResponseEntity<User> getByDepartment(@PathVariable String department) {
-        User user = userService.getByDepartment(department);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<List<User>> getByDepartment(@PathVariable String department) {
+        List<User> userList = userService.getByDepartment(department);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable String id) {

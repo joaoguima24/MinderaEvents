@@ -25,14 +25,14 @@ public class UserService {
 
        return userRepository.insert(user);
     }
-    public User getByRole(String officeRole) {
+    public List<User> getByRole(String officeRole) {
 
-        return  userRepository.findByOfficeRole(officeRole);
+        return (List<User>) userRepository.findByOfficeRole(officeRole);
     }
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
     }
-    public User getByDepartment(String department) {
+    public List<User> getByDepartment(String department) {
 
         return  userRepository.findByDepartment(department);
     }
