@@ -12,7 +12,9 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends MongoRepository<Event, String> {
-    List<Event> findByTitle(String title);
+
+   List<Event> findByTitle(String title);
+
 
     List<Event> findByState(String state);
 

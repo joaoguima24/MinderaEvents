@@ -24,7 +24,9 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
+
     public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
+
     @PostMapping("/createUser")
     public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateevent")
@@ -54,7 +56,9 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable String id) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserById(id));
-    }@GetMapping("/getbytitle/{title}")
+    }
+    @GetMapping("/getbytitle/{title}")
+
     public ResponseEntity<List<DisplayEventListDto>> getByTitle(@PathVariable String title) throws EventNotFoundException {
         List<DisplayEventListDto> eventList = eventService.getByTitle(title).getBody();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
@@ -73,6 +77,11 @@ public class UserController {
     public ResponseEntity<List<DisplayEventListDto>> getByType(@PathVariable String type) throws EventNotFoundException {
         List<DisplayEventListDto> eventList = eventService.getByType(type).getBody();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
-    }
 
+    }
+      @PutMapping("/updateuser/{id}")
+      public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+          return userService.updateUser(id, user);
+      }
+    
 }

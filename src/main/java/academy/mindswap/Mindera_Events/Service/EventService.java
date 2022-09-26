@@ -5,7 +5,14 @@ import academy.mindswap.Mindera_Events.Commands.EventConverter;
 import academy.mindswap.Mindera_Events.Commands.EventDto;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
+
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
+
+
+import academy.mindswap.Mindera_Events.Model.User;
+import academy.mindswap.Mindera_Events.Repository.EventRepository;
+import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +21,7 @@ import java.util.List;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
+
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
@@ -23,6 +31,7 @@ public class EventService {
         eventRepository.save(event);
         return dto;
     }
+
     public List<DisplayEventListDto> getEventList() {
         return eventRepository.findAll().stream()
                 .map(EventConverter::getEventToDto)
@@ -71,3 +80,4 @@ public class EventService {
         return ResponseEntity.ok(dto);
     }
 }
+
