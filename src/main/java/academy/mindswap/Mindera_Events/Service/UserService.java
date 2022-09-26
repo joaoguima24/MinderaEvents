@@ -42,8 +42,6 @@ public class UserService {
     public ResponseEntity<User> updateUser(String id, User userDetails) {
        User updateUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
-
-
         updateUser.setAppRole(userDetails.getAppRole());
         updateUser.setEmail(userDetails.getEmail());
         updateUser.setDepartment(userDetails.getDepartment());

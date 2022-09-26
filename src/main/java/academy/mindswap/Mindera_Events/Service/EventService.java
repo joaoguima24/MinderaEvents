@@ -13,9 +13,10 @@ import java.util.List;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-
-    public EventService(EventRepository eventRepository) {
+    private final UserService userService;
+    public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
+        this.userService = userService;
     }
 
     public Event createEvent(Event event) {
@@ -61,5 +62,19 @@ public class EventService {
 
         eventRepository.save(updateEvent);
         return ResponseEntity.ok(updateEvent);
+    }
+    public void relateEventToUser(String userId, String id ) {
+        // guarda na attendence ou na wating list, tens adiconar user
+
+        Event event= eventRepository.findById(id).orElseThrow();
+        User user= userService.getUserById(userId);
+        if ((event.getAttendance().size() + 1)<= event.getSlots()){
+
+        }
+        event.getAttendance().add(user);
+        eventRepository.save(event);
+        user.getEvents().add(event);
+        userService.updateUser(userId,user);
+
     }
 }

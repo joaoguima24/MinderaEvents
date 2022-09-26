@@ -95,5 +95,9 @@ public class UserController {
     public ResponseEntity<Event> updateEvent(@PathVariable String id, @RequestBody Event event) {
         return eventService.updateEvent(id, event);
     }
+    @PostMapping("/{idUser}/{id}")
+    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id){
+        eventService.relateEventToUser(idUser, id);
 
+    }
 }
