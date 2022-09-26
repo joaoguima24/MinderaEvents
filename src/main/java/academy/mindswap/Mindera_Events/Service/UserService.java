@@ -1,10 +1,17 @@
 package academy.mindswap.Mindera_Events.Service;
 
 
+import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
+import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
+import academy.mindswap.Mindera_Events.Commands.UserConverter;
+import academy.mindswap.Mindera_Events.Commands.UserDto;
+import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
+
 import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,32 +19,49 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public List<User> getUserList() {
-
-        List<User> userList = userRepository.findAll();
-
-        return userList;
+    public CreatingUserDto createUser(CreatingUserDto dto) {
+        User user = UserConverter.creatingUserDto(dto);
+        userRepository.save(user);
+        return dto;
+    }
+    public List<DisplayUserDto> getUserList() {
+        return userRepository.findAll().stream()
+                .map(UserConverter::displayUserDto)
+                .toList();
+    }
+    public List<DisplayUserDto> getByRole(String officeRole) throws UserNotFoundException {
+        if(userRepository.findByOfficeRole(officeRole).stream().toList().isEmpty()){
+            throw new UserNotFoundException("No users found."); }
+        List<DisplayUserDto> dtoList = userRepository.findByOfficeRole(officeRole)
+                .stream()
+                .map(UserConverter::displayUserDto)
+                .toList();
+        return dtoList;
+    }
+    public List<DisplayUserDto> getByDepartment(String department) throws UserNotFoundException {
+        if(userRepository.findByDepartment(department).stream().toList().isEmpty()){
+            throw new UserNotFoundException("No users found.");}
+        List<DisplayUserDto> dtoList = userRepository.findByDepartment(department)
+                .stream()
+                .map(UserConverter::displayUserDto)
+                .toList();
+        return dtoList;
     }
 
-    public User createUser(User user) {
+    public UserDto getUserById(String id) throws UserNotFoundException {
+        if(userRepository.findById(id).isEmpty()){
+            throw new UserNotFoundException("The User with this id doesn't exist. Id: " + id);}
+        User user = userRepository.findById(id).get();
+        return UserConverter.UserToDto(user);
 
-       return userRepository.insert(user);
     }
 
-    public List<User> getByRole(String officeRole) {
 
-        return (List<User>) userRepository.findByOfficeRole(officeRole);
-    }
-    public User getUserById(String id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
-    }
-    public List<User> getByDepartment(String department) {
 
-        return  userRepository.findByDepartment(department);
+
     }
     public ResponseEntity<User> updateUser(String id, User userDetails) {
        User updateUser = userRepository.findById(id)
