@@ -2,18 +2,15 @@ package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.EventConverter;
-import academy.mindswap.Mindera_Events.Commands.UpdateEventStateDto;
-import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
+import academy.mindswap.Mindera_Events.Commands.UpdateEventDto;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
 
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EventService {
@@ -32,7 +29,7 @@ public class EventService {
     }
 
     public Event getByTitle(String title) {
-        return  eventRepository.findByTitle(title);
+        return eventRepository.findByTitle(title);
     }
     public Event getByState(String state) {
         return  eventRepository.findByState(state);
@@ -46,7 +43,7 @@ public class EventService {
         return  eventRepository.findByType(type);
     }
 
-    public ResponseEntity<UpdateEventStateDto> updateEventState(String id, UpdateEventStateDto dto) throws UserNotFoundException {
+    public ResponseEntity<UpdateEventDto> updateEventState(String id, UpdateEventDto dto) throws UserNotFoundException {
         Event updateEvent = eventRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
         updateEvent.setState(dto.getState());

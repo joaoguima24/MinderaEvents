@@ -2,7 +2,6 @@ package academy.mindswap.Mindera_Events.Service;
 
 
 import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
-import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
 import academy.mindswap.Mindera_Events.Commands.UserConverter;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
@@ -19,8 +18,10 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public CreatingUserDto createUser(CreatingUserDto dto) {
+        User user = UserConverter.creatingUserDto(dto);
+        userRepository.save(user);
+        return dto;
     }
     public List<DisplayUserDto> getUserList() {
         return userRepository.findAll().stream()

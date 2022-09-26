@@ -3,7 +3,7 @@ package academy.mindswap.Mindera_Events.Controller;
 import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
-import academy.mindswap.Mindera_Events.Commands.UpdateEventStateDto;
+import academy.mindswap.Mindera_Events.Commands.UpdateEventDto;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
 import academy.mindswap.Mindera_Events.Model.User;
@@ -32,9 +32,9 @@ public class UserController {
         return eventService.createEvent(event);
     }
     @PostMapping("/createUser")
-    public User createUser(@RequestBody User user){return userService.createUser(user);}
+    public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateeventstate/{eventID}")
-    public ResponseEntity<UpdateEventStateDto> updateEventStateById(@PathVariable String eventID , @RequestBody UpdateEventStateDto dto) throws Exception {
+    public ResponseEntity<UpdateEventDto> updateEventStateById(@PathVariable String eventID , @RequestBody UpdateEventDto dto) throws Exception {
         return eventService.updateEventState(eventID , dto);
     }
     @GetMapping("/getuserlist")
