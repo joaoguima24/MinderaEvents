@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,8 +34,5 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
     }
-    public List<User> getByDepartment(String department) {
-
-        return  userRepository.findByDepartment(department);
-    }
+    public List<User> getByDepartment(String department) {return  userRepository.findByDepartment(department);}
 }

@@ -43,10 +43,9 @@ public class EventService {
         return  eventRepository.findByType(type);
     }
 
-    public ResponseEntity<UpdateEventDto> updateEventState(String id, UpdateEventDto dto) throws UserNotFoundException {
-        Event updateEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
-        updateEvent.setState(dto.getState());
+    public ResponseEntity<UpdateEventDto> updateEvent(UpdateEventDto dto) throws UserNotFoundException {
+        eventRepository.findById(dto.getId()).orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + dto.getId()));
+        Event updateEvent = EventConverter.updateEventDto(dto);
         eventRepository.save(updateEvent);
         return ResponseEntity.ok(dto);
     }
