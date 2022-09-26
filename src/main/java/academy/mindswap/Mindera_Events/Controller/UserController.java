@@ -2,6 +2,7 @@ package academy.mindswap.Mindera_Events.Controller;
 
 import academy.mindswap.Mindera_Events.Model.Event;
 import academy.mindswap.Mindera_Events.Model.User;
+
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -12,7 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/user")
+import academy.mindswap.Mindera_Events.Service.EmailSenderService;
+
+
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -21,9 +29,15 @@ public class UserController {
     public UserController(UserService userService, EventService eventService) {
         this.userService = userService;
         this.eventService = eventService;
+
     }
 
-    @PostMapping("/user/createevent")
+
+
+ 
+
+    @PostMapping("/createevent")
+
     public Event createEvent(@RequestBody Event event){
         return eventService.createEvent(event);
     }
@@ -33,7 +47,15 @@ public class UserController {
         return eventService.updateEventState(event);
     }
 
-    @GetMapping("/user/geteventlist")
+
+    @PostMapping("/createUser")
+    public User createUser(@RequestBody User user){return userService.createUser(user);}
+    @GetMapping("/getuserlist")
+    public ResponseEntity<List<User>> getUserList() {
+        List<User> userList = userService.getUserList();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+    @GetMapping("/geteventlist")
     public ResponseEntity<List<Event>> getEventList() {
         List<Event> eventList = eventService.getEventList();
         return new ResponseEntity<>(eventList, HttpStatus.OK);

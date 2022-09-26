@@ -15,7 +15,10 @@ public class Event {
     private String title;
     private String type;
     private String state;
-    private Date date;
+
+
+    private String date;
+
     private String startingTime;
     private int slots;
     private List<User> attendance;
