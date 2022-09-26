@@ -1,5 +1,6 @@
 package academy.mindswap.Mindera_Events.Service;
 
+
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -24,4 +25,5 @@ public class UserService {
 
        return userRepository.insert(user);
     }
+
 }

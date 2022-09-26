@@ -2,12 +2,20 @@ package academy.mindswap.Mindera_Events.Controller;
 
 import academy.mindswap.Mindera_Events.Model.Event;
 import academy.mindswap.Mindera_Events.Model.User;
-import academy.mindswap.Mindera_Events.Service.EmailSenderService;
+
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import academy.mindswap.Mindera_Events.Service.EmailSenderService;
+
+
 
 import java.util.List;
 
@@ -24,9 +32,19 @@ public class UserController {
 
     }
 
+
+
+ 
+
     @PostMapping("/createevent")
+
     public Event createEvent(@RequestBody Event event){
         return eventService.createEvent(event);
+    }
+
+    @PutMapping("/user/updateeventstate")
+    public Event updateEventState(@RequestBody Event event) throws ChangeSetPersister.NotFoundException {
+        return eventService.updateEventState(event);
     }
 
 
@@ -42,6 +60,4 @@ public class UserController {
         List<Event> eventList = eventService.getEventList();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
-
-
 }
