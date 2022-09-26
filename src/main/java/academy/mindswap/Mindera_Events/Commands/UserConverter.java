@@ -27,4 +27,5 @@ public class UserConverter {
     }
 
 
+    public static User dtoToUser(UserDto dto) {return modelMapper().map(dto, User.class);}
 }

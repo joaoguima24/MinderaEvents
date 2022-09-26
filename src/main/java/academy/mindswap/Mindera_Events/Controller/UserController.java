@@ -79,9 +79,9 @@ public class UserController {
         return new ResponseEntity<>(eventList, HttpStatus.OK);
 
     }
-      @PutMapping("/updateuser/{id}")
-      public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
-          return userService.updateUser(id, user);
+      @PutMapping("/updateuser")
+      public ResponseEntity<UserDto> updateUser(@RequestBody UserDto dto) throws UserNotFoundException {
+          return userService.updateUser(dto);
       }
     
 }
