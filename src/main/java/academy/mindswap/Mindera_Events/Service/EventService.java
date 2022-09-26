@@ -2,12 +2,16 @@ package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.EventConverter;
+import academy.mindswap.Mindera_Events.Commands.UpdateEventStateDto;
+import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
 
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -17,7 +21,6 @@ public class EventService {
     }
 
     public Event createEvent(Event event) {
-        //Event e = new Event();
         return eventRepository.insert(event);
     }
     public List<DisplayEventListDto> getEventList() {
