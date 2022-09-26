@@ -16,9 +16,7 @@ public class Event {
     private String type;
     private String state;
 
-
     private String date;
-
     private String startingTime;
     private int slots;
     private List<User> attendance;

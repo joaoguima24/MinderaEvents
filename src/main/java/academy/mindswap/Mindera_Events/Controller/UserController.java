@@ -5,17 +5,9 @@ import academy.mindswap.Mindera_Events.Model.User;
 
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import academy.mindswap.Mindera_Events.Service.EmailSenderService;
-
-
 
 import java.util.List;
 
@@ -96,4 +88,9 @@ public class UserController {
         return eventService.updateEvent(id, event);
     }
 
+    @PostMapping("/{idUser}/{id}")
+    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id){
+        eventService.relateEventToUser(idUser, id);
+
+    }
 }

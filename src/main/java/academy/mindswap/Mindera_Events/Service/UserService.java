@@ -61,4 +61,8 @@ public class UserService {
 
 
     }
+
+    public User findById(String userId) {
+        return userRepository.findById(userId).orElseThrow(()->new RuntimeException("gfjfgfjh"));
+    }
 }
