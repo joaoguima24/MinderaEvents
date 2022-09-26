@@ -13,19 +13,15 @@ public class Event {
     @Id
     private String id;
     private String title;
-
     private String type;
-
     private String state;
+
 
     private String date;
 
     private String startingTime;
-
     private int slots;
-
     private List<User> attendance;
-
     private List<User> waitingList;
 
     public Event() {

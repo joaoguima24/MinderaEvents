@@ -1,6 +1,7 @@
 package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Model.Event;
+
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class EventService {
         List<Event> eventList = eventRepository.findAll();
         return eventList;
     }
+
     public Event getByTitle(String title) {
 
         return  eventRepository.findByTitle(title);
@@ -36,4 +38,5 @@ public class EventService {
     public Event getByType(String type) {
         return  eventRepository.findByType(type);
     }
+
 }

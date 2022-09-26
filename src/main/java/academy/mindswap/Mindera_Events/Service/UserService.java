@@ -1,5 +1,6 @@
 package academy.mindswap.Mindera_Events.Service;
 
+
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
 import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
@@ -25,6 +26,7 @@ public class UserService {
 
        return userRepository.insert(user);
     }
+
     public List<User> getByRole(String officeRole) {
 
         return (List<User>) userRepository.findByOfficeRole(officeRole);
