@@ -38,10 +38,10 @@ public class UserController {
         return eventService.createEvent(event);
     }
 
-    @PutMapping("/user/updateeventstate")
+   /* @PutMapping("/user/updateeventstate")
     public Event updateEventState(@RequestBody Event event) throws ChangeSetPersister.NotFoundException {
         return eventService.updateEventState(event);
-    }
+    }*/
 
 
     @PostMapping("/createUser")
@@ -71,24 +71,32 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }@GetMapping("/getbytitle/{title}")
-    public ResponseEntity<Event> getByTitle(@PathVariable String title) {
-        Event events = eventService.getByTitle(title);
+    public ResponseEntity<List<Event>> getByTitle(@PathVariable String title) {
+        List<Event> events = eventService.getByTitle(title);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
     @GetMapping("/getbystate/{state}")
-    public ResponseEntity<Event> getByState(@PathVariable String state) {
-        Event event = eventService.getByState(state);
+    public ResponseEntity<List<Event>> getByState(@PathVariable String state) {
+        List<Event> event = eventService.getByState(state);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
     @GetMapping("/getbydate/{date}")
-    public ResponseEntity<Event> getByDate(@PathVariable String date){
-        Event event = eventService.getByDate(date);
+    public ResponseEntity<List<Event>> getByDate(@PathVariable String date){
+        List<Event> event = eventService.getByDate(date);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
     @GetMapping("/getbytype/{type}")
-    public ResponseEntity<Event> getByType(@PathVariable String type) {
-        Event event = eventService.getByType(type);
+    public ResponseEntity<List<Event>> getByType(@PathVariable String type) {
+        List<Event> event = eventService.getByType(type);
         return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+      @PutMapping("/updateuser/{id}")
+      public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+          return userService.updateUser(id, user);
+      }
+    @PutMapping("/updateevent/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable String id, @RequestBody Event event) {
+        return eventService.updateEvent(id, event);
     }
 
 }
