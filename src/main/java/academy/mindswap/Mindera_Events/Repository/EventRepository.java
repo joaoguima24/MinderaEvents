@@ -8,13 +8,15 @@ import academy.mindswap.Mindera_Events.Model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EventRepository extends MongoRepository<Event, String> {
-    Event findByTitle(String title);
+   List<Event> findByTitle(String title);
 
-    Event findByState(String state);
+    List<Event> findByState(String state);
 
-    Event findByDate(String date);
+    List<Event> findByDate(String date);
 
-    Event findByType(String type);
+    List<Event> findByType(String type);
 }
