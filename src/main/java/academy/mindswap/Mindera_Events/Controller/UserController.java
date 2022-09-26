@@ -1,5 +1,6 @@
 package academy.mindswap.Mindera_Events.Controller;
 
+import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
 import academy.mindswap.Mindera_Events.Commands.UpdateEventStateDto;

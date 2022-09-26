@@ -1,6 +1,7 @@
 package academy.mindswap.Mindera_Events.Service;
 
 
+import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
 import academy.mindswap.Mindera_Events.Commands.UserConverter;
@@ -19,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
     public User createUser(User user) {
-        return userRepository.insert(user);
+        return userRepository.save(user);
     }
     public List<DisplayUserDto> getUserList() {
         return userRepository.findAll().stream()
