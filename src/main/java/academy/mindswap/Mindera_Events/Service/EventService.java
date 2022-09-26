@@ -1,10 +1,18 @@
 package academy.mindswap.Mindera_Events.Service;
 
+import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
+import academy.mindswap.Mindera_Events.Commands.EventConverter;
+import academy.mindswap.Mindera_Events.Commands.EventDto;
+import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
+
+import academy.mindswap.Mindera_Events.Repository.EventRepository;
+
 
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
 import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,48 +26,58 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public Event createEvent(Event event) {
-        //Event e = new Event();
-        return eventRepository.insert(event);
+    public EventDto createEvent(EventDto dto) {
+        Event event = EventConverter.updateEventDto(dto);
+        eventRepository.save(event);
+        return dto;
     }
 
-    public List<Event> getEventList() {
-        List<Event> eventList = eventRepository.findAll();
-        return eventList;
+    public List<DisplayEventListDto> getEventList() {
+        return eventRepository.findAll().stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
     }
 
-    public List<Event> getByTitle(String title) {
-
-        return eventRepository.findByTitle(title);
-    }
-
-    public List<Event> getByState(String state) {
-        return eventRepository.findByState(state);
-    }
-
-    public List<Event> getByDate(String date) {
-        return eventRepository.findByDate(date);
-    }
-
-    public List<Event> getByType(String type) {
-        return eventRepository.findByType(type);
-    }
-
-    public ResponseEntity<Event> updateEvent(String id, Event eventDetails) {
-        Event updateEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
-
-
-        updateEvent.setAttendance(eventDetails.getAttendance());
-        updateEvent.setDate(eventDetails.getDate());
-        updateEvent.setSlots(eventDetails.getSlots());
-        updateEvent.setState(eventDetails.getState());
-        updateEvent.setStartingTime(eventDetails.getStartingTime());
-        updateEvent.setType(eventDetails.getType());
-        updateEvent.setWaitingList(eventDetails.getWaitingList());
-        updateEvent.setTitle(eventDetails.getTitle());
-
-        eventRepository.save(updateEvent);
+    public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws EventNotFoundException {
+        if(eventRepository.findByTitle(title).stream().toList().isEmpty()){
+            throw new EventNotFoundException("No events found."); }
+        List<DisplayEventListDto> updateEvent = eventRepository.findByTitle(title).stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
         return ResponseEntity.ok(updateEvent);
     }
+    public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws EventNotFoundException {
+        if(eventRepository.findByState(state).stream().toList().isEmpty()){
+            throw new EventNotFoundException("No events found."); }
+        List<DisplayEventListDto> updateEvent = eventRepository.findByState(state).stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
+        return ResponseEntity.ok(updateEvent);
+    }
+
+    public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws EventNotFoundException {
+        if(eventRepository.findByDate(date).stream().toList().isEmpty()){
+            throw new EventNotFoundException("No events found."); }
+        List<DisplayEventListDto> updateEvent = eventRepository.findByDate(date).stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
+        return ResponseEntity.ok(updateEvent);
+    }
+
+    public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws EventNotFoundException {
+        if(eventRepository.findByType(type).stream().toList().isEmpty()){
+            throw new EventNotFoundException("No events found."); }
+        List<DisplayEventListDto> updateEvent = eventRepository.findByType(type).stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
+        return ResponseEntity.ok(updateEvent);
+    }
+
+    public ResponseEntity<EventDto> updateEvent(EventDto dto) throws EventNotFoundException {
+        eventRepository.findById(dto.getId()).orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
+        Event updateEvent = EventConverter.updateEventDto(dto);
+        eventRepository.save(updateEvent);
+        return ResponseEntity.ok(dto);
+    }
 }
+
