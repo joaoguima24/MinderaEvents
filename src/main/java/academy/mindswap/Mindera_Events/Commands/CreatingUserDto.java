@@ -2,11 +2,9 @@ package academy.mindswap.Mindera_Events.Commands;
 
 import lombok.Data;
 
-
 @Data
 public class CreatingUserDto {
 
-    private String id;
     private String name;
     private String email;
     private String events;
@@ -14,5 +12,4 @@ public class CreatingUserDto {
     private String officeRole;
     private String dateOfBirth;
 
-    public CreatingUserDto() {}
 }

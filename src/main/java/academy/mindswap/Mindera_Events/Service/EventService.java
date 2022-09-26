@@ -1,5 +1,7 @@
 package academy.mindswap.Mindera_Events.Service;
 
+import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
+import academy.mindswap.Mindera_Events.Commands.EventConverter;
 import academy.mindswap.Mindera_Events.Model.Event;
 
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
@@ -18,13 +20,13 @@ public class EventService {
         //Event e = new Event();
         return eventRepository.insert(event);
     }
-    public List<Event> getEventList() {
-        List<Event> eventList = eventRepository.findAll();
-        return eventList;
+    public List<DisplayEventListDto> getEventList() {
+        return eventRepository.findAll().stream()
+                .map(EventConverter::getEventToDto)
+                .toList();
     }
 
     public Event getByTitle(String title) {
-
         return  eventRepository.findByTitle(title);
     }
     public Event getByState(String state) {

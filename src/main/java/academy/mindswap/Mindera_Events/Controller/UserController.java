@@ -1,21 +1,17 @@
 package academy.mindswap.Mindera_Events.Controller;
 
+import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
+import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
+import academy.mindswap.Mindera_Events.Commands.UpdateEventStateDto;
+import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
 import academy.mindswap.Mindera_Events.Model.User;
 
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import academy.mindswap.Mindera_Events.Service.EmailSenderService;
-
-
 
 import java.util.List;
 
@@ -29,30 +25,27 @@ public class UserController {
     public UserController(UserService userService, EventService eventService) {
         this.userService = userService;
         this.eventService = eventService;
-
     }
-
     @PostMapping("/createevent")
-
     public Event createEvent(@RequestBody Event event){
         return eventService.createEvent(event);
     }
-
-
-
     @PostMapping("/createUser")
     public User createUser(@RequestBody User user){return userService.createUser(user);}
+    @PutMapping("/updateeventstate/{eventID}")
+    public UpdateEventStateDto updateEventStateById(@PathVariable String eventID){
+        return null;
+    }
     @GetMapping("/getuserlist")
-    public ResponseEntity<List<User>> getUserList() {
-        List<User> userList = userService.getUserList();
+    public ResponseEntity<List<DisplayUserDto>> getUserList() {
+        List<DisplayUserDto> userList = userService.getUserList();
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/geteventlist")
-    public ResponseEntity<List<Event>> getEventList() {
-        List<Event> eventList = eventService.getEventList();
+    public ResponseEntity<List<DisplayEventListDto>> getEventList() {
+        List<DisplayEventListDto> eventList = eventService.getEventList();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
-
     @GetMapping("/getbyrole/{officeRole}")
     public ResponseEntity<List<User>> getByRole(@PathVariable String officeRole) {
         List<User> userList = userService.getByRole(officeRole);
@@ -64,7 +57,7 @@ public class UserController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<User> getUserById(@PathVariable String id) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserById(id));
     }@GetMapping("/getbytitle/{title}")
     public ResponseEntity<Event> getByTitle(@PathVariable String title) {
