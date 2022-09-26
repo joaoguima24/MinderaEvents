@@ -38,10 +38,7 @@ public class UserController {
         return eventService.createEvent(event);
     }
 
-   /* @PutMapping("/user/updateeventstate")
-    public Event updateEventState(@RequestBody Event event) throws ChangeSetPersister.NotFoundException {
-        return eventService.updateEventState(event);
-    }*/
+
 
 
     @PostMapping("/createUser")
