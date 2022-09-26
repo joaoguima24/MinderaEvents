@@ -1,12 +1,8 @@
 package academy.mindswap.Mindera_Events.Controller;
 
-import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
-import academy.mindswap.Mindera_Events.Commands.DisplayEventListDto;
-import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
-import academy.mindswap.Mindera_Events.Commands.UpdateEventDto;
+import academy.mindswap.Mindera_Events.Commands.*;
+import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
-import academy.mindswap.Mindera_Events.Model.Event;
-import academy.mindswap.Mindera_Events.Model.User;
 
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
@@ -28,13 +24,11 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
-    public Event createEvent(@RequestBody Event event){
-        return eventService.createEvent(event);
-    }
+    public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
     @PostMapping("/createUser")
     public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateevent")
-    public ResponseEntity<UpdateEventDto> updateEventStateById(@RequestBody UpdateEventDto dto) throws Exception {
+    public ResponseEntity<EventDto> updateEventStateById(@RequestBody EventDto dto) throws Exception {
         return eventService.updateEvent(dto);
     }
     @GetMapping("/getuserlist")
@@ -48,37 +42,37 @@ public class UserController {
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
     @GetMapping("/getbyrole/{officeRole}")
-    public ResponseEntity<List<User>> getByRole(@PathVariable String officeRole) {
-        List<User> userList = userService.getByRole(officeRole);
+    public ResponseEntity<List<DisplayUserDto>> getByRole(@PathVariable String officeRole) throws UserNotFoundException {
+        List<DisplayUserDto> userList = userService.getByRole(officeRole);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/getbydepartment/{department}")
-    public ResponseEntity<List<User>> getByDepartment(@PathVariable String department) {
-        List<User> userList = userService.getByDepartment(department);
+    public ResponseEntity<List<DisplayUserDto>> getByDepartment(@PathVariable String department) throws UserNotFoundException {
+        List<DisplayUserDto> userList = userService.getByDepartment(department);
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) throws UserNotFoundException {
+    public ResponseEntity<UserDto> getUserById(@PathVariable String id) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserById(id));
     }@GetMapping("/getbytitle/{title}")
-    public ResponseEntity<Event> getByTitle(@PathVariable String title) {
-        Event events = eventService.getByTitle(title);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    public ResponseEntity<List<DisplayEventListDto>> getByTitle(@PathVariable String title) throws EventNotFoundException {
+        List<DisplayEventListDto> eventList = eventService.getByTitle(title).getBody();
+        return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
     @GetMapping("/getbystate/{state}")
-    public ResponseEntity<Event> getByState(@PathVariable String state) {
-        Event event = eventService.getByState(state);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+    public ResponseEntity<List<DisplayEventListDto>> getByState(@PathVariable String state) throws EventNotFoundException {
+        List<DisplayEventListDto> eventList = eventService.getByState(state).getBody();
+        return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
     @GetMapping("/getbydate/{date}")
-    public ResponseEntity<Event> getByDate(@PathVariable String date){
-        Event event = eventService.getByDate(date);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+    public ResponseEntity<List<DisplayEventListDto>> getByDate(@PathVariable String date) throws EventNotFoundException {
+        List<DisplayEventListDto> eventList = eventService.getByDate(date).getBody();
+        return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
     @GetMapping("/getbytype/{type}")
-    public ResponseEntity<Event> getByType(@PathVariable String type) {
-        Event event = eventService.getByType(type);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+    public ResponseEntity<List<DisplayEventListDto>> getByType(@PathVariable String type) throws EventNotFoundException {
+        List<DisplayEventListDto> eventList = eventService.getByType(type).getBody();
+        return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
 
 }

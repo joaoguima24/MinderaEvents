@@ -17,8 +17,7 @@ public class EventConverter {
     public static DisplayEventListDto getEventToDto(Event event) {
         return modelMapper().map(event, DisplayEventListDto.class);
     }
-
-    public static Event updateEventDto(UpdateEventDto dto){
+    public static Event updateEventDto(EventDto dto){
         return modelMapper().map(dto , Event.class);
     }
 

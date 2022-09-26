@@ -4,6 +4,7 @@ package academy.mindswap.Mindera_Events.Service;
 import academy.mindswap.Mindera_Events.Commands.CreatingUserDto;
 import academy.mindswap.Mindera_Events.Commands.DisplayUserDto;
 import academy.mindswap.Mindera_Events.Commands.UserConverter;
+import academy.mindswap.Mindera_Events.Commands.UserDto;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
@@ -24,15 +25,37 @@ public class UserService {
     }
     public List<DisplayUserDto> getUserList() {
         return userRepository.findAll().stream()
-                .map(UserConverter::getUserToDto)
+                .map(UserConverter::displayUserDto)
                 .toList();
     }
-    public List<User> getByRole(String officeRole) {
-        return userRepository.findByOfficeRole(officeRole);
+    public List<DisplayUserDto> getByRole(String officeRole) throws UserNotFoundException {
+        if(userRepository.findByOfficeRole(officeRole).stream().toList().isEmpty()){
+            throw new UserNotFoundException("No users found."); }
+        List<DisplayUserDto> dtoList = userRepository.findByOfficeRole(officeRole)
+                .stream()
+                .map(UserConverter::displayUserDto)
+                .toList();
+        return dtoList;
     }
-    public User getUserById(String id) throws UserNotFoundException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
+    public List<DisplayUserDto> getByDepartment(String department) throws UserNotFoundException {
+        if(userRepository.findByDepartment(department).stream().toList().isEmpty()){
+            throw new UserNotFoundException("No users found.");}
+        List<DisplayUserDto> dtoList = userRepository.findByDepartment(department)
+                .stream()
+                .map(UserConverter::displayUserDto)
+                .toList();
+        return dtoList;
     }
-    public List<User> getByDepartment(String department) {return  userRepository.findByDepartment(department);}
+
+    public UserDto getUserById(String id) throws UserNotFoundException {
+        if(userRepository.findById(id).isEmpty()){
+            throw new UserNotFoundException("The User with this id doesn't exist. Id: " + id);}
+        User user = userRepository.findById(id).get();
+        return UserConverter.UserToDto(user);
+
+    }
+
+
+
+
 }

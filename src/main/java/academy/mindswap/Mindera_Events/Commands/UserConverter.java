@@ -14,12 +14,16 @@ public class UserConverter {
         return new ModelMapper();
     }
 
-    public static DisplayUserDto getUserToDto (User user){
+    public static DisplayUserDto displayUserDto (User user){
         return modelMapper().map(user, DisplayUserDto.class);
     }
 
     public static User creatingUserDto(CreatingUserDto dto){
         return modelMapper().map(dto, User.class);
+    }
+
+    public static UserDto UserToDto (User user){
+        return modelMapper().map(user, UserDto.class);
     }
 
 
