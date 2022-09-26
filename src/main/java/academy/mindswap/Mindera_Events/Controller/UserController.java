@@ -32,10 +32,6 @@ public class UserController {
 
     }
 
-
-
- 
-
     @PostMapping("/createevent")
 
     public Event createEvent(@RequestBody Event event){
@@ -60,4 +56,39 @@ public class UserController {
         List<Event> eventList = eventService.getEventList();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
+
+    @GetMapping("/getbyrole/{officeRole}")
+    public ResponseEntity<List<User>> getByRole(@PathVariable String officeRole) {
+        List<User> userList = userService.getByRole(officeRole);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+    @GetMapping("/getbydepartment/{department}")
+    public ResponseEntity<List<User>> getByDepartment(@PathVariable String department) {
+        List<User> userList = userService.getByDepartment(department);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }@GetMapping("/getbytitle/{title}")
+    public ResponseEntity<Event> getByTitle(@PathVariable String title) {
+        Event events = eventService.getByTitle(title);
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+    @GetMapping("/getbystate/{state}")
+    public ResponseEntity<Event> getByState(@PathVariable String state) {
+        Event event = eventService.getByState(state);
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+    @GetMapping("/getbydate/{date}")
+    public ResponseEntity<Event> getByDate(@PathVariable String date){
+        Event event = eventService.getByDate(date);
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+    @GetMapping("/getbytype/{type}")
+    public ResponseEntity<Event> getByType(@PathVariable String type) {
+        Event event = eventService.getByType(type);
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
 }

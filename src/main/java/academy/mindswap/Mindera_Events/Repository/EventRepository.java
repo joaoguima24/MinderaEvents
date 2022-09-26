@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends MongoRepository<Event, String> {
+    Event findByTitle(String title);
+
+    Event findByState(String state);
+
+    Event findByDate(String date);
+
+    Event findByType(String type);
 }

@@ -3,6 +3,7 @@ package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
+import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,4 +27,15 @@ public class UserService {
        return userRepository.insert(user);
     }
 
+    public List<User> getByRole(String officeRole) {
+
+        return (List<User>) userRepository.findByOfficeRole(officeRole);
+    }
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("The User with this id doesn't exist. Id: " + id));
+    }
+    public List<User> getByDepartment(String department) {
+
+        return  userRepository.findByDepartment(department);
+    }
 }
