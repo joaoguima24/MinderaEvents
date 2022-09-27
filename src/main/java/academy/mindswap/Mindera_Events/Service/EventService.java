@@ -23,6 +23,8 @@ public class EventService {
 
     public EventDto createEvent(EventDto dto) {
         Event event = EventConverter.updateEventDto(dto);
+        event.setId("open");
+        event.setDate("data actual");
         eventRepository.save(event);
         return dto;
     }
@@ -75,23 +77,7 @@ public class EventService {
         return ResponseEntity.ok(dto);
     }
 
-   /* public ResponseEntity<Event> updateEvent(String id, Event eventDetails) {
-        Event updateEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
 
-
-        updateEvent.setAttendance(eventDetails.getAttendance());
-        updateEvent.setDate(eventDetails.getDate());
-        updateEvent.setSlots(eventDetails.getSlots());
-        updateEvent.setState(eventDetails.getState());
-        updateEvent.setStartingTime(eventDetails.getStartingTime());
-        updateEvent.setType(eventDetails.getType());
-        updateEvent.setWaitingList(eventDetails.getWaitingList());
-        updateEvent.setTitle(eventDetails.getTitle());
-
-        eventRepository.save(updateEvent);
-        return ResponseEntity.ok(updateEvent);
-    }*/
     public void relateEventToUser(String userId, String id ) throws academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException {
 
 
@@ -119,6 +105,8 @@ public class EventService {
             event.getWaitingList().add(user);
             eventRepository.save(event);
         }
+
+
 
         }
 
