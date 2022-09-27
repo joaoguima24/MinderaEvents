@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping("/createUser")
     public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateevent")
-    public ResponseEntity<EventDto> updateEventStateById(@RequestBody EventDto dto) throws Exception {
+    public ResponseEntity<EventDto> updateEventById(@RequestBody EventDto dto) throws Exception {
         return eventService.updateEvent(dto);
     }
     @GetMapping("/getuserlist")
