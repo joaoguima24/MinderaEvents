@@ -86,7 +86,7 @@ public class UserController {
           return userService.updateUser(id, user);
       }
     @PostMapping("/{idUser}/{id}")
-    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
+    public void addEventToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
         eventService.relateEventToUser(idUser, id);
 
     }

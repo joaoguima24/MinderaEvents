@@ -73,6 +73,7 @@ public class EventService {
     public ResponseEntity<EventDto> updateEvent(EventDto dto) throws EventNotFoundException {
         eventRepository.findById(dto.getId()).orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
         Event updateEvent = EventConverter.updateEventDto(dto);
+
         eventRepository.save(updateEvent);
         return ResponseEntity.ok(dto);
     }
@@ -96,12 +97,16 @@ public class EventService {
         if ((event.getAttendance().size() + 1)<= event.getSlots()){
             event.getAttendance().add(user);
             eventRepository.save(event);
+
+            user.getEvents().parallelStream().filter(idEvent -> user.getEvents().equals(user.getEvents()));
+
             user.getEvents().add(id);
             userService.updateUser(userId,user);
 
         } else if (event.getWaitingList()== null) {
             List <User> listWaiting=new ArrayList<>();
             event.setWaitingList(listWaiting);
+            // alterar id no model
             event.getWaitingList().add(user);
             eventRepository.save(event);
         }
