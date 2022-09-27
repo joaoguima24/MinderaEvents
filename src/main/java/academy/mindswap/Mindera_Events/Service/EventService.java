@@ -5,14 +5,7 @@ import academy.mindswap.Mindera_Events.Commands.EventConverter;
 import academy.mindswap.Mindera_Events.Commands.EventDto;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
-
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
-
-
-import academy.mindswap.Mindera_Events.Model.User;
-import academy.mindswap.Mindera_Events.Repository.EventRepository;
-import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
