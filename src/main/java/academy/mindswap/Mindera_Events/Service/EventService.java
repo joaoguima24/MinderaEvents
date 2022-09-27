@@ -34,36 +34,36 @@ public class EventService {
     public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws EventNotFoundException {
         if(eventRepository.findByTitle(title).stream().toList().isEmpty()){
             throw new EventNotFoundException("No events found."); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByTitle(title).stream()
+        List<DisplayEventListDto> eventList = eventRepository.findByTitle(title).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
+        return ResponseEntity.ok(eventList);
     }
     public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws EventNotFoundException {
         if(eventRepository.findByState(state).stream().toList().isEmpty()){
             throw new EventNotFoundException("No events found."); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByState(state).stream()
+        List<DisplayEventListDto> eventList = eventRepository.findByState(state).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
+        return ResponseEntity.ok(eventList);
     }
 
     public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws EventNotFoundException {
         if(eventRepository.findByDate(date).stream().toList().isEmpty()){
             throw new EventNotFoundException("No events found."); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByDate(date).stream()
+        List<DisplayEventListDto> eventList = eventRepository.findByDate(date).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
+        return ResponseEntity.ok(eventList);
     }
 
     public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws EventNotFoundException {
         if(eventRepository.findByType(type).stream().toList().isEmpty()){
             throw new EventNotFoundException("No events found."); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByType(type).stream()
+        List<DisplayEventListDto> eventList = eventRepository.findByType(type).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
+        return ResponseEntity.ok(eventList);
     }
 
     public ResponseEntity<EventDto> updateEvent(EventDto dto) throws EventNotFoundException {
