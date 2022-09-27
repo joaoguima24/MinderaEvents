@@ -2,10 +2,13 @@ package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Commands.*;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
+import academy.mindswap.Mindera_Events.Logger.EventAlreadyExistsException;
+import academy.mindswap.Mindera_Events.Logger.NoEventsFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
 
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
 private final UserService userService;
@@ -22,6 +26,9 @@ private final UserService userService;
     }
 
     public EventDto createEvent(EventDto dto) {
+        if(eventRepository.existsById(dto.getId())){
+            throw new EventAlreadyExistsException();
+        }
         Event event = EventConverter.updateEventDto(dto);
         eventRepository.save(event);
         return dto;
@@ -33,43 +40,46 @@ private final UserService userService;
                 .toList();
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws EventNotFoundException {
+    public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws NoEventsFoundException {
         if(eventRepository.findByTitle(title).stream().toList().isEmpty()){
-            throw new EventNotFoundException("No events found."); }
+            throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByTitle(title).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
         return ResponseEntity.ok(updateEvent);
     }
-    public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws EventNotFoundException {
+    public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws NoEventsFoundException{
         if(eventRepository.findByState(state).stream().toList().isEmpty()){
-            throw new EventNotFoundException("No events found."); }
+            throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByState(state).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
         return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws EventNotFoundException {
+    public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws NoEventsFoundException {
         if(eventRepository.findByDate(date).stream().toList().isEmpty()){
-            throw new EventNotFoundException("No events found."); }
+            throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByDate(date).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
         return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws EventNotFoundException {
+    public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws NoEventsFoundException {
         if(eventRepository.findByType(type).stream().toList().isEmpty()){
-            throw new EventNotFoundException("No events found."); }
+            throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByType(type).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
         return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<EventDto> updateEvent(EventDto dto) throws EventNotFoundException {
-        eventRepository.findById(dto.getId()).orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
+    public ResponseEntity<EventDto> updateEvent(EventDto dto) throws NoEventsFoundException {
+        if(eventRepository.findById(dto.getId()).isEmpty()){
+            throw new NoEventsFoundException();
+        }
+            //.orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
         Event updateEvent = EventConverter.updateEventDto(dto);
         eventRepository.save(updateEvent);
         return ResponseEntity.ok(dto);
