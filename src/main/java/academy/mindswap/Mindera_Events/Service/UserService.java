@@ -9,7 +9,7 @@ import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.UserRepository;
 
-import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
@@ -62,11 +62,10 @@ public class UserService {
 
 
 
-    }
+
     public ResponseEntity<User> updateUser(String id, User userDetails) {
        User updateUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
-
+                .orElseThrow();//() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
 
         updateUser.setAppRole(userDetails.getAppRole());
         updateUser.setEmail(userDetails.getEmail());

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @RequiredArgsConstructor
 @Document("users")
@@ -16,6 +18,7 @@ public class User {
     private String id;
     private String name;
     private String email;
+    private List<String> events;
     private String password;
     private String officeRole;
     private String appRole;
