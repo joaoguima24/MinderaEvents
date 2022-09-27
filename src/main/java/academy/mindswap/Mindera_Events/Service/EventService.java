@@ -5,6 +5,7 @@ import academy.mindswap.Mindera_Events.Commands.EventConverter;
 import academy.mindswap.Mindera_Events.Commands.EventDto;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Model.Event;
+
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,7 @@ import java.util.List;
 public class EventService {
     private final EventRepository eventRepository;
 
-    public EventService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
+    public EventService(EventRepository eventRepository) {this.eventRepository = eventRepository;}
 
     public EventDto createEvent(EventDto dto) {
         Event event = EventConverter.updateEventDto(dto);
@@ -72,5 +71,7 @@ public class EventService {
         eventRepository.save(updateEvent);
         return ResponseEntity.ok(dto);
     }
+
+
 }
 

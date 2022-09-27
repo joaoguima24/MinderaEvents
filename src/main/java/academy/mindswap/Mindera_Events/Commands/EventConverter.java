@@ -21,4 +21,6 @@ public class EventConverter {
         return modelMapper().map(dto , Event.class);
     }
 
+
+
 }
