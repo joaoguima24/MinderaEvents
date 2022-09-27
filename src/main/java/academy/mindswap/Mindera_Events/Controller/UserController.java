@@ -4,6 +4,7 @@ import academy.mindswap.Mindera_Events.Commands.*;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 
+import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/user")
@@ -83,5 +85,10 @@ public class UserController {
       public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
           return userService.updateUser(id, user);
       }
+    @PostMapping("/{idUser}/{id}")
+    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
+        eventService.relateEventToUser(idUser, id);
+
+    }
     
 }
