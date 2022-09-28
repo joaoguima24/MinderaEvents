@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -28,7 +29,6 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
-
     public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
 
     @PostMapping("/createUser")
@@ -37,6 +37,11 @@ public class UserController {
     @PutMapping("/updateevent")
     public ResponseEntity<EventDto> updateEventStateById(@RequestBody EventDto dto) throws Exception {
         return eventService.updateEvent(dto);
+    }
+    @GetMapping("/external")
+    @PreAuthorize("permitAll()")
+    public Object getQrCode() throws IOException, InterruptedException {
+        return userService.qrCode("1");
     }
     @GetMapping("/getuserlist")
     public ResponseEntity<List<DisplayUserDto>> getUserList() {
@@ -89,9 +94,14 @@ public class UserController {
           return userService.updateUser(id, user);
       }
     @PostMapping("/{idUser}/{id}")
-    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
+    public void addEventToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
         eventService.relateEventToUser(idUser, id);
 
+    }
+
+    @DeleteMapping("/{idUser}/{idEvent}")
+    public void updateUserPresence(@PathVariable String idUser, @PathVariable String idEvent){
+        eventService.deleteUserPresence(idUser,idEvent);
     }
     
 }
