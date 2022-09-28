@@ -1,6 +1,7 @@
 package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Commands.*;
+import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Logger.*;
 import academy.mindswap.Mindera_Events.Model.Event;
 
@@ -11,12 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +32,7 @@ public class EventService {
             log.error(EVENT_ALREADY_EXISTS);
             throw new EventAlreadyExistsException();
         }
-        Event event = EventConverter.updateEventDto(dto);
-        eventRepository.save(event);
+        eventRepository.save(EventConverter.updateEventDto(dto));
         return dto;
     }
 
@@ -48,59 +42,57 @@ public class EventService {
                 .toList();
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws NoEventsFoundException {
+    public List<DisplayEventListDto> getByTitle(String title) throws NoEventsFoundException {
         if(eventRepository.findByTitle(title).stream().toList().isEmpty()){
             log.error(NO_EVENTS_FOUND);
-            throw new NoEventsFoundException(); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByTitle(title).stream()
+            throw new NoEventsFoundException();
+        }
+        return eventRepository.findByTitle(title).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
     }
-    public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws NoEventsFoundException{
+
+    public List<DisplayEventListDto> getByState(String state) throws NoEventsFoundException{
         if(eventRepository.findByState(state).stream().toList().isEmpty()){
             log.error(NO_EVENTS_FOUND);
-            throw new NoEventsFoundException(); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByState(state).stream()
+            throw new NoEventsFoundException();
+        }
+        return eventRepository.findByState(state).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws NoEventsFoundException {
+    public List<DisplayEventListDto> getByDate(String date) throws NoEventsFoundException {
         if(eventRepository.findByDate(date).stream().toList().isEmpty()){
             log.error(NO_EVENTS_FOUND);
-            throw new NoEventsFoundException(); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByDate(date).stream()
+            throw new NoEventsFoundException();
+        }
+        return eventRepository.findByDate(date).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws NoEventsFoundException {
+    public List<DisplayEventListDto> getByType(String type) throws NoEventsFoundException {
         if(eventRepository.findByType(type).stream().toList().isEmpty()){
             log.error(NO_EVENTS_FOUND);
-            throw new NoEventsFoundException(); }
-        List<DisplayEventListDto> updateEvent = eventRepository.findByType(type).stream()
+            throw new NoEventsFoundException();
+        }
+        return eventRepository.findByType(type).stream()
                 .map(EventConverter::getEventToDto)
                 .toList();
-        return ResponseEntity.ok(updateEvent);
     }
 
-    public ResponseEntity<EventDto> updateEvent(EventDto dto) throws NoEventsFoundException {
+    public EventDto updateEvent(EventDto dto) throws NoEventsFoundException {
         if(eventRepository.findById(dto.getId()).isEmpty()){
             log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException();
         }
-            //.orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
-        Event updateEvent = EventConverter.updateEventDto(dto);
-        eventRepository.save(updateEvent);
-        return ResponseEntity.ok(dto);
+        eventRepository.save(EventConverter.updateEventDto(dto));
+        return dto;
     }
 
 
-    public void relateEventToUser(String userId, String id ) throws academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException {
-        // guarda na attendence ou na wating list, tens adiconar user
+    public String relateEventToUser(String userId, String id ) throws academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException {
         Event event = getEventByEventId(id);
         User user= getUserByUserId(userId);
         attendanceCheckExist(event);
@@ -108,17 +100,14 @@ public class EventService {
         waitingListCheckExist(event);
 
         if (user.getEvents().stream()
-                .anyMatch(eventInUse -> eventInUse.equals(event.getId()))){
-            throw new UserRelationWithEventAlreadyExist();
-        }
-
-        if(event.getWaitingList().stream()
-                .anyMatch(theUser->theUser.equals(user))){
-            throw new UserRelationWithEventAlreadyExist();
+                .anyMatch(eventInUse -> eventInUse.equals(event.getId())) ||
+                event.getWaitingList().stream()
+                        .anyMatch(theUser->theUser.equals(user))){
+            return user.getName() + " you are already in the event list";
         }
 
         if (!event.getState().equalsIgnoreCase("Open")){
-            throw new EventNotOpen();
+            return "This event is accepting users";
         }
 
         if ((event.getAttendance().size() + 1)<= event.getSlots()){
@@ -126,18 +115,17 @@ public class EventService {
             eventRepository.save(event);
             user.getEvents().add(id);
             userService.updateUser(userId,user);
-            return;
+            return user.getName() + " welcome to our event";
         }
-
         event.getWaitingList().add(user);
         eventRepository.save(event);
+        return user.getName() + " you are now in the waiting list";
 
 }
 
     private void waitingListCheckExist(Event event) {
         if (event.getWaitingList()==null){
-            List<User> list = new ArrayList<>();
-            event.setWaitingList(list);
+            event.setWaitingList(new ArrayList<>());
             eventRepository.save(event);
         }
     }
@@ -148,22 +136,19 @@ public class EventService {
 
     @NotNull
     private Event getEventByEventId(String id) {
-        Event event= eventRepository.findById(id).orElseThrow();
-        return event;
+        return eventRepository.findById(id).orElseThrow();
     }
 
     private void userEventsCheckExist(User user) {
         if (user.getEvents()== null){
-            List<String> idList = new ArrayList<>();
-            user.setEvents(idList);
+            user.setEvents(new ArrayList<>());
             userService.updateUser(user.getId(), user);
         }
     }
 
     private void attendanceCheckExist(Event event) {
         if (event.getAttendance() == null){
-            List<User> userList = new ArrayList<>();
-            event.setAttendance(userList);
+            event.setAttendance(new ArrayList<>());
             eventRepository.save(event);
         }
     }

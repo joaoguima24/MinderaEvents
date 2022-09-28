@@ -3,7 +3,6 @@ package academy.mindswap.Mindera_Events.Controller;
 import academy.mindswap.Mindera_Events.Commands.*;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
-
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
@@ -11,13 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.PermitAll;
-
 import javax.validation.Valid;
-
 import java.io.IOException;
-
 import java.util.List;
 
 
@@ -33,14 +27,17 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public EventDto createEvent(@Valid @RequestBody EventDto dto){return eventService.createEvent(dto);}
 
     @PostMapping("/createUser")
     @PreAuthorize("permitAll()")
     public CreatingUserDto createUser(@Valid @RequestBody CreatingUserDto dto){return userService.createUser(dto);}
+
     @PutMapping("/updateevent")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<EventDto> updateEventStateById( @Valid @RequestBody EventDto dto) throws Exception {
-        return eventService.updateEvent(dto);
+        return new ResponseEntity<>(eventService.updateEvent(dto), HttpStatus.OK);
     }
     @GetMapping("/external")
     @PreAuthorize("permitAll()")
@@ -48,62 +45,69 @@ public class UserController {
         return userService.qrCode("1");
     }
     @GetMapping("/getuserlist")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayUserDto>> getUserList() {
-        List<DisplayUserDto> userList = userService.getUserList();
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
+
     @GetMapping("/geteventlist")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayEventListDto>> getEventList() {
-        List<DisplayEventListDto> eventList = eventService.getEventList();
-        return new ResponseEntity<>(eventList, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getEventList(), HttpStatus.OK);
     }
+
     @GetMapping("/getbyrole/{officeRole}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayUserDto>> getByRole(@PathVariable String officeRole) throws UserNotFoundException {
-        List<DisplayUserDto> userList = userService.getByRole(officeRole);
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getByRole(officeRole), HttpStatus.OK);
     }
+
     @GetMapping("/getbydepartment/{department}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayUserDto>> getByDepartment(@PathVariable String department) throws UserNotFoundException {
-        List<DisplayUserDto> userList = userService.getByDepartment(department);
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+        return new ResponseEntity<>(userService.getByDepartment(department), HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> getUserById(@PathVariable String id) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserById(id));
     }
     @GetMapping("/getbytitle/{title}")
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayEventListDto>> getByTitle(@PathVariable String title) throws EventNotFoundException {
-        List<DisplayEventListDto> eventList = eventService.getByTitle(title).getBody();
-        return new ResponseEntity<>(eventList, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getByTitle(title), HttpStatus.OK);
     }
     @GetMapping("/getbystate/{state}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayEventListDto>> getByState(@PathVariable String state) throws EventNotFoundException {
-        List<DisplayEventListDto> eventList = eventService.getByState(state).getBody();
-        return new ResponseEntity<>(eventList, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getByState(state), HttpStatus.OK);
     }
     @GetMapping("/getbydate/{date}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayEventListDto>> getByDate(@PathVariable String date) throws EventNotFoundException {
-        List<DisplayEventListDto> eventList = eventService.getByDate(date).getBody();
-        return new ResponseEntity<>(eventList, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getByDate(date), HttpStatus.OK);
     }
     @GetMapping("/getbytype/{type}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DisplayEventListDto>> getByType(@PathVariable String type) throws EventNotFoundException {
-        List<DisplayEventListDto> eventList = eventService.getByType(type).getBody();
-        return new ResponseEntity<>(eventList, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getByType(type), HttpStatus.OK);
 
     }
       @PutMapping("/updateuser/{id}")
+      @PreAuthorize("hasRole('ROLE_ADMIN')")
       public ResponseEntity<User> updateUser(@PathVariable String id,@Valid @RequestBody User user) {
-          return userService.updateUser(id, user);
+          return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
       }
     @PostMapping("/{idUser}/{id}")
-    public void addEventToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
-        eventService.relateEventToUser(idUser, id);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> addEventToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
+        return new ResponseEntity<>(eventService.relateEventToUser(idUser, id), HttpStatus.OK);
 
     }
 
     @DeleteMapping("/{idUser}/{idEvent}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateUserPresence(@PathVariable String idUser, @PathVariable String idEvent){
         eventService.deleteUserPresence(idUser,idEvent);
     }
