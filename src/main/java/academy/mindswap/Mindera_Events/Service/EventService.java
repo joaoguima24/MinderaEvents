@@ -1,14 +1,14 @@
 package academy.mindswap.Mindera_Events.Service;
 
 import academy.mindswap.Mindera_Events.Commands.*;
-import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
-import academy.mindswap.Mindera_Events.Logger.EventAlreadyExistsException;
-import academy.mindswap.Mindera_Events.Logger.NoEventsFoundException;
+import academy.mindswap.Mindera_Events.Logger.*;
 import academy.mindswap.Mindera_Events.Model.Event;
 
 import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Repository.EventRepository;
+import academy.mindswap.Mindera_Events.excption.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class EventService {
     private final EventRepository eventRepository;
-private final UserService userService;
+    private final UserService userService;
     public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
         this.userService = userService;
@@ -85,43 +85,104 @@ private final UserService userService;
         return ResponseEntity.ok(dto);
     }
 
-   /* public ResponseEntity<Event> updateEvent(String id, Event eventDetails) {
-        Event updateEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
 
-
-        updateEvent.setAttendance(eventDetails.getAttendance());
-        updateEvent.setDate(eventDetails.getDate());
-        updateEvent.setSlots(eventDetails.getSlots());
-        updateEvent.setState(eventDetails.getState());
-        updateEvent.setStartingTime(eventDetails.getStartingTime());
-        updateEvent.setType(eventDetails.getType());
-        updateEvent.setWaitingList(eventDetails.getWaitingList());
-        updateEvent.setTitle(eventDetails.getTitle());
-
-        eventRepository.save(updateEvent);
-        return ResponseEntity.ok(updateEvent);
-    }*/
     public void relateEventToUser(String userId, String id ) throws academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException {
         // guarda na attendence ou na wating list, tens adiconar user
+        Event event = getEventByEventId(id);
+        User user= getUserByUserId(userId);
+        attendanceCheckExist(event);
+        userEventsCheckExist(user);
+        waitingListCheckExist(event);
 
+        if (user.getEvents().stream()
+                .anyMatch(eventInUse -> eventInUse.equals(event.getId()))){
+            throw new UserRelationWithEventAlreadyExist();
+        }
+
+        if(event.getWaitingList().stream()
+                .anyMatch(theUser->theUser.equals(user))){
+            throw new UserRelationWithEventAlreadyExist();
+        }
+
+        if (!event.getState().equalsIgnoreCase("Open")){
+            throw new EventNotOpen();
+        }
+
+        if ((event.getAttendance().size() + 1)<= event.getSlots()){
+            event.getAttendance().add(user);
+            eventRepository.save(event);
+            user.getEvents().add(id);
+            userService.updateUser(userId,user);
+            return;
+        }
+
+        event.getWaitingList().add(user);
+        eventRepository.save(event);
+
+}
+
+    private void waitingListCheckExist(Event event) {
+        if (event.getWaitingList()==null){
+            List<User> list = new ArrayList<>();
+            event.setWaitingList(list);
+            eventRepository.save(event);
+        }
+    }
+
+    private User getUserByUserId(String userId) {
+        return UserConverter.DtoToUser(userService.getUserById(userId));
+    }
+
+    @NotNull
+    private Event getEventByEventId(String id) {
         Event event= eventRepository.findById(id).orElseThrow();
-        User user= UserConverter.DtoToUser(userService.getUserById(userId));
+        return event;
+    }
+
+    private void userEventsCheckExist(User user) {
+        if (user.getEvents()== null){
+            List<String> idList = new ArrayList<>();
+            user.setEvents(idList);
+            userService.updateUser(user.getId(), user);
+        }
+    }
+
+    private void attendanceCheckExist(Event event) {
         if (event.getAttendance() == null){
             List<User> userList = new ArrayList<>();
             event.setAttendance(userList);
             eventRepository.save(event);
         }
-        if (user.getEvents()== null){
-            List<String> idList = new ArrayList<>();
-            user.setEvents(idList);
-        }
-        if ((event.getAttendance().size() + 1)<= event.getSlots()){
+    }
 
+    public void deleteUserPresence(String idUser, String idEvent) {
+        Event event = getEventByEventId(idEvent);
+        User user = getUserByUserId(idUser);
+        if (event.getAttendance().stream()
+                .anyMatch(theUser->theUser.getId().equals(user.getId()))){
+            event.getAttendance().removeIf(user1->user1.getId().equals(user.getId()));
+            eventRepository.save(event);
+            user.getEvents().remove(idEvent);
+            userService.updateUser(idUser,user);
+            updateWaitingListToAttendance(event);
+            return;
         }
+        if (event.getWaitingList().stream().anyMatch(theUser->theUser.equals(user))){
+            event.getWaitingList().removeIf(user1->user1.getId().equals(user.getId()));
+            eventRepository.save(event);
+            return;
+        }
+        throw new UserNotFoundException("The user is not present in that event.");
+    }
 
-        event.getAttendance().add(user);
-        eventRepository.save(event);
-        user.getEvents().add(id);
-        userService.updateUser(userId,user);
-}}
+    public void updateWaitingListToAttendance(Event event){
+        if (!event.getWaitingList().isEmpty()){
+            if (event.getAttendance().size()<event.getSlots()){
+                User user = event.getWaitingList().stream().findFirst().get();
+                event.getWaitingList().remove(user);
+                event.getAttendance().add(user);
+                eventRepository.save(event);
+            }
+        }
+    }
+}
