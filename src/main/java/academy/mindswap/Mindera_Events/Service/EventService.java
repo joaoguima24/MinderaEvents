@@ -12,8 +12,15 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+
+import static academy.mindswap.Mindera_Events.messages.Message.*;
 
 @Service
 @Slf4j
@@ -27,6 +34,7 @@ public class EventService {
 
     public EventDto createEvent(EventDto dto) {
         if(eventRepository.existsById(dto.getId())){
+            log.error(EVENT_ALREADY_EXISTS);
             throw new EventAlreadyExistsException();
         }
         Event event = EventConverter.updateEventDto(dto);
@@ -42,6 +50,7 @@ public class EventService {
 
     public ResponseEntity<List<DisplayEventListDto>> getByTitle(String title) throws NoEventsFoundException {
         if(eventRepository.findByTitle(title).stream().toList().isEmpty()){
+            log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByTitle(title).stream()
                 .map(EventConverter::getEventToDto)
@@ -50,6 +59,7 @@ public class EventService {
     }
     public ResponseEntity<List<DisplayEventListDto>> getByState(String state) throws NoEventsFoundException{
         if(eventRepository.findByState(state).stream().toList().isEmpty()){
+            log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByState(state).stream()
                 .map(EventConverter::getEventToDto)
@@ -59,6 +69,7 @@ public class EventService {
 
     public ResponseEntity<List<DisplayEventListDto>> getByDate(String date) throws NoEventsFoundException {
         if(eventRepository.findByDate(date).stream().toList().isEmpty()){
+            log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByDate(date).stream()
                 .map(EventConverter::getEventToDto)
@@ -68,6 +79,7 @@ public class EventService {
 
     public ResponseEntity<List<DisplayEventListDto>> getByType(String type) throws NoEventsFoundException {
         if(eventRepository.findByType(type).stream().toList().isEmpty()){
+            log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException(); }
         List<DisplayEventListDto> updateEvent = eventRepository.findByType(type).stream()
                 .map(EventConverter::getEventToDto)
@@ -77,6 +89,7 @@ public class EventService {
 
     public ResponseEntity<EventDto> updateEvent(EventDto dto) throws NoEventsFoundException {
         if(eventRepository.findById(dto.getId()).isEmpty()){
+            log.error(NO_EVENTS_FOUND);
             throw new NoEventsFoundException();
         }
             //.orElseThrow(() -> new EventNotFoundException("This event doesn't exist with this id: " + dto.getId()));
@@ -185,4 +198,5 @@ public class EventService {
             }
         }
     }
+
 }

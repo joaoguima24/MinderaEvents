@@ -13,7 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+
 import javax.validation.Valid;
+
+import java.io.IOException;
+
 import java.util.List;
 
 
@@ -37,6 +41,11 @@ public class UserController {
     @PutMapping("/updateevent")
     public ResponseEntity<EventDto> updateEventStateById( @Valid @RequestBody EventDto dto) throws Exception {
         return eventService.updateEvent(dto);
+    }
+    @GetMapping("/external")
+    @PreAuthorize("permitAll()")
+    public Object getQrCode() throws IOException, InterruptedException {
+        return userService.qrCode("1");
     }
     @GetMapping("/getuserlist")
     public ResponseEntity<List<DisplayUserDto>> getUserList() {
