@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,9 @@ import java.util.List;
 public class Event {
     @Id
     private String id;
+    @NotBlank(message = "Title is mandatory")
     private String title;
+    @NotBlank(message = "Type is mandatory")
     private String type;
     private String state;
     private String date;

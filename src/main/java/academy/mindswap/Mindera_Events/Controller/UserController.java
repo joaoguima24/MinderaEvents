@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -28,13 +29,13 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
-    public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
+    public EventDto createEvent(@Valid @RequestBody EventDto dto){return eventService.createEvent(dto);}
 
     @PostMapping("/createUser")
     @PreAuthorize("permitAll()")
-    public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
+    public CreatingUserDto createUser(@Valid @RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateevent")
-    public ResponseEntity<EventDto> updateEventStateById(@RequestBody EventDto dto) throws Exception {
+    public ResponseEntity<EventDto> updateEventStateById( @Valid @RequestBody EventDto dto) throws Exception {
         return eventService.updateEvent(dto);
     }
     @GetMapping("/getuserlist")
@@ -84,7 +85,7 @@ public class UserController {
 
     }
       @PutMapping("/updateuser/{id}")
-      public ResponseEntity<User> updateUser(@PathVariable String id, @RequestBody User user) {
+      public ResponseEntity<User> updateUser(@PathVariable String id,@Valid @RequestBody User user) {
           return userService.updateUser(id, user);
       }
     @PostMapping("/{idUser}/{id}")
