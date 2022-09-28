@@ -28,7 +28,6 @@ public class UserController {
         this.eventService = eventService;
     }
     @PostMapping("/createevent")
-
     public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
 
     @PostMapping("/createUser")
@@ -89,9 +88,14 @@ public class UserController {
           return userService.updateUser(id, user);
       }
     @PostMapping("/{idUser}/{id}")
-    public void addEventeToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
+    public void addEventToUser(@PathVariable String idUser, @PathVariable String id) throws UserNotFoundException {
         eventService.relateEventToUser(idUser, id);
 
+    }
+
+    @DeleteMapping("/{idUser}/{idEvent}")
+    public void updateUserPresence(@PathVariable String idUser, @PathVariable String idEvent){
+        eventService.deleteUserPresence(idUser,idEvent);
     }
     
 }
