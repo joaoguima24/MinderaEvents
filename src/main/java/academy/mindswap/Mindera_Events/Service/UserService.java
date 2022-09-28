@@ -59,8 +59,7 @@ public class UserService {
         userRepository.save(user);
 
         try {
-            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app", "aqui vai o qr code: " +
-                    "<img src='data:image/png;base64, "+ new String(qrCode(user.getId()), StandardCharsets.UTF_8 )+"' />" );
+            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app", qrCode(user.getId()));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
