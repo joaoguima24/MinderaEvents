@@ -3,6 +3,7 @@ package academy.mindswap.Mindera_Events.Logger;
 import academy.mindswap.Mindera_Events.Exceptions.EventNotFoundException;
 import academy.mindswap.Mindera_Events.Exceptions.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.Around;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class ApiExceptionHandler {
                 .build(), HttpStatus.CONFLICT);
     }
 
+    @Around("@annotation(logError)")
     public void logError(Exception exception, HttpServletRequest request) {
         String logErrorMessage = request.getMethod()
                 .concat(" ")
