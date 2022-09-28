@@ -17,15 +17,22 @@ import academy.mindswap.Mindera_Events.Repository.UserRepository;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static academy.mindswap.Mindera_Events.messages.Message.NO_USERS_FOUND;
@@ -50,23 +57,31 @@ public class UserService {
         }
         User user = UserConverter.creatingUserDto(dto);
         userRepository.save(user);
+
         try {
-            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app",qrCode(user.getId()));
+            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app", "aqui vai o qr code: " +
+                    "<img src='data:image/png;base64, "+ new String(qrCode(user.getId()), StandardCharsets.UTF_8 )+"' />" );
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
+
+
         return dto;
     }
-    public String qrCode(String userID) throws IOException, InterruptedException {
+    public byte[] qrCode(String userID) throws IOException, InterruptedException {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://api.qrserver.com/v1/create-qr-code/?data="+userID+"&size=100x100"))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        HttpResponse<InputStream> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
+        return StreamUtils.copyToByteArray(response.body());
+
     }
     @LogExecutionTime
     public List<DisplayUserDto> getUserList() {
