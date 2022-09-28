@@ -9,8 +9,10 @@ import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 
 
@@ -30,6 +32,7 @@ public class UserController {
     public EventDto createEvent(@RequestBody EventDto dto){return eventService.createEvent(dto);}
 
     @PostMapping("/createUser")
+    @PreAuthorize("permitAll()")
     public CreatingUserDto createUser(@RequestBody CreatingUserDto dto){return userService.createUser(dto);}
     @PutMapping("/updateevent")
     public ResponseEntity<EventDto> updateEventStateById(@RequestBody EventDto dto) throws Exception {
