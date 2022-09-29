@@ -71,11 +71,7 @@ public class UserService {
 
             emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app", qrCode(user.getId()));
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (MessagingException e) {
+        } catch (IOException |InterruptedException|MessagingException e) {
             throw new RuntimeException(e);
         }
 
