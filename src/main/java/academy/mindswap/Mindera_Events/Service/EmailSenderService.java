@@ -36,8 +36,12 @@ public class EmailSenderService {
         //message.setText("Mail QR <img src=\"cid:qrcode.png\"></img>",true);
         message.setText("Mail QR<br></br>",true);
         message.setSubject(subject);
+
         mailSender.send(mimeMessage);
-        System.out.println("Mail Send...");
+
+
+        System.out.println("Mail Sent...");
+
 
 
     }
