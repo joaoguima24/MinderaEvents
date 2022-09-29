@@ -17,6 +17,7 @@ import academy.mindswap.Mindera_Events.Repository.UserRepository;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 
 import static academy.mindswap.Mindera_Events.messages.Message.NO_USERS_FOUND;
@@ -51,7 +54,7 @@ public class UserService {
         User user = UserConverter.creatingUserDto(dto);
         userRepository.save(user);
         try {
-            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app",qrCode(user.getId()));
+            emailSenderService.sendSimpleEmail(user.getEmail(),"Welcome to our app",qrCode(user.getId()).toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -60,7 +63,6 @@ public class UserService {
         return dto;
     }
     public String qrCode(String userID) throws IOException, InterruptedException {
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://api.qrserver.com/v1/create-qr-code/?data="+userID+"&size=100x100"))
                 .method("GET", HttpRequest.BodyPublishers.noBody())
@@ -78,47 +80,53 @@ public class UserService {
         if(userRepository.findByOfficeRole(officeRole).stream().toList().isEmpty()){
             log.error(NO_USERS_FOUND);
             throw new NoUserFoundException(); }
-        List<DisplayUserDto> dtoList = userRepository.findByOfficeRole(officeRole)
+        return userRepository.findByOfficeRole(officeRole)
                 .stream()
                 .map(UserConverter::displayUserDto)
                 .toList();
-        return dtoList;
     }
     public List<DisplayUserDto> getByDepartment(String department) throws NoUserFoundException {
         if(userRepository.findByDepartment(department).stream().toList().isEmpty()){
             log.error(NO_USERS_FOUND);
             throw new NoUserFoundException();}
-        List<DisplayUserDto> dtoList = userRepository.findByDepartment(department)
+        return userRepository.findByDepartment(department)
                 .stream()
                 .map(UserConverter::displayUserDto)
                 .toList();
-        return dtoList;
     }
 
     public UserDto getUserById(String id) throws NoUserFoundException {
-        if(userRepository.findById(id).isEmpty()){
-            log.error(NO_USERS_FOUND);
-            throw new NoUserFoundException();}
-        User user = userRepository.findById(id).get();
-        return UserConverter.UserToDto(user);
+        return UserConverter.UserToDto(userRepository.findById(id).orElseThrow(NoUserFoundException::new));
     }
 
-    public ResponseEntity<User> updateUser(String id, User userDetails) {
+    public User updateUser(String id, User userDetails) {
        User updateUser = userRepository.findById(id)
-                .orElseThrow();//() -> new UserNotFoundException("This user doesn't exist with this id: " + id));
-
-        updateUser.setAppRole(userDetails.getAppRole());
-        updateUser.setEmail(userDetails.getEmail());
-        updateUser.setDepartment(userDetails.getDepartment());
-        updateUser.setDateOfBirth(userDetails.getDateOfBirth());
-        updateUser.setName(userDetails.getName());
-        updateUser.setEvents(userDetails.getEvents());
-        updateUser.setOfficeRole(userDetails.getOfficeRole());
-        updateUser.setPassword(userDetails.getPassword());
-        userRepository.save(updateUser);
-        return ResponseEntity.ok(updateUser);
-
-
+                .orElseThrow();
+        if (userDetails.getAppRole()!=null){
+            updateUser.setAppRole(userDetails.getAppRole());
+        }
+        if (userDetails.getEmail()!=null){
+            updateUser.setEmail(userDetails.getEmail());
+        }
+        if (userDetails.getDepartment()!=null){
+            updateUser.setDepartment(userDetails.getDepartment());
+        }
+        if (userDetails.getDateOfBirth()!=null){
+            updateUser.setDateOfBirth(userDetails.getDateOfBirth());
+        }
+        if (userDetails.getName()!=null){
+            updateUser.setName(userDetails.getName());
+        }
+        if (userDetails.getEvents()!=null){
+            updateUser.setEvents(userDetails.getEvents());
+        }
+        if (userDetails.getOfficeRole()!=null){
+            updateUser.setOfficeRole(userDetails.getOfficeRole());
+        }
+        if (userDetails.getPassword()!=null){
+            updateUser.setPassword(userDetails.getPassword());
+        }
+        return userRepository.save(updateUser);
     }
 
 }
