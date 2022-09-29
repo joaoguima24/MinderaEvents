@@ -19,7 +19,6 @@ public class User {
     private String id;
     @NotBlank(message = "Name is mandatory")
     private String name;
-    @NotBlank(message = "Email is mandatory")
     private String email;
     private List<String> events;
     private String password;

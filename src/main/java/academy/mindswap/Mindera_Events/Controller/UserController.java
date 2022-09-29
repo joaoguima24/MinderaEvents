@@ -7,6 +7,7 @@ import academy.mindswap.Mindera_Events.Model.User;
 import academy.mindswap.Mindera_Events.Service.EventService;
 import academy.mindswap.Mindera_Events.Service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class UserController {
     public ResponseEntity<EventDto> updateEventStateById( @Valid @RequestBody EventDto dto) throws Exception {
         return new ResponseEntity<>(eventService.updateEvent(dto), HttpStatus.OK);
     }
-    @GetMapping("/external")
+    @GetMapping(value = "/external", produces = MediaType.IMAGE_PNG_VALUE)
     @PreAuthorize("permitAll()")
     public Object getQrCode() throws IOException, InterruptedException {
         return userService.qrCode("1");
